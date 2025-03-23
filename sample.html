@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Persian Datepicker - نمونه پیشرفته</title>
+
+    <!-- فونت وزیر -->
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/font-face.css" rel="stylesheet"
+          type="text/css"/>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Persian Date -->
+    <script src="https://cdn.jsdelivr.net/npm/persian-date@1.1.0/dist/persian-date.min.js"></script>
+
+    <!-- Persian Datepicker -->
+    <link rel="stylesheet" href="dist/css/persian-datepicker.min.css">
+    <link rel="stylesheet" href="dist/css/theme/persian-datepicker-modern.css">
+    <script src="dist/js/persian-datepicker.min.js"></script>
+    <!--    <script src="src/es6/index.js"></script>-->
+    <!-- Tippy.js برای tooltip بهتر -->
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+
+    <style>
+        body {
+            font-family: 'Vazir', Tahoma, Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .example-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #2196f3;
+        }
+
+        .datepicker-input {
+            width: 250px;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: inherit;
+            margin-bottom: 10px;
+        }
+
+        .description {
+            margin-top: 15px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        /* سفارشی کردن رویدادها */
+        .holiday {
+            background-color: rgba(255, 86, 86, 0.1) !important;
+        }
+
+        .meeting {
+            background-color: rgba(33, 150, 243, 0.1) !important;
+        }
+
+        .special {
+            background-color: rgba(76, 175, 80, 0.1) !important;
+        }
+
+        /* استایل tooltip سفارشی برای رویدادها */
+        .tippy-box[data-theme~='calendar-events'] {
+            background-color: #333;
+            color: white;
+            border-radius: 4px;
+        }
+
+        .tippy-box[data-theme~='calendar-events'] .tippy-arrow {
+            color: #333;
+        }
+
+        .event-tooltip-item {
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .event-tooltip-item:last-child {
+            border-bottom: none;
+        }
+
+        .event-tooltip-title {
+            font-weight: bold;
+            margin-bottom: 3px;
+        }
+
+        .event-tooltip-desc {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>نمونه استفاده از Persian Datepicker</h1>
+
+    <!-- نمونه 1: غیرفعال کردن روزهای هفته -->
+    <div class="section">
+        <div class="example-title">نمونه ۱: غیرفعال کردن روزهای هفته</div>
+        <input type="text" class="datepicker-input" id="disabledWeekDays" placeholder="روزهای پنجشنبه و جمعه غیرفعال">
+        <div class="description">در این مثال، روزهای پنجشنبه و جمعه (۵ و ۶) غیرفعال شده‌اند.</div>
+    </div>
+
+    <!-- نمونه 2: غیرفعال کردن تاریخ‌های خاص -->
+    <div class="section">
+        <div class="example-title">نمونه ۲: غیرفعال کردن تاریخ‌های خاص</div>
+        <input type="text" class="datepicker-input" id="disabledDates" placeholder="برخی تاریخ‌های خاص غیرفعال">
+        <div class="description">در این مثال، تاریخ‌های ۱۳ هر ماه و برخی مناسبت‌های خاص غیرفعال شده‌اند.</div>
+    </div>
+
+    <!-- نمونه 3: تنظیم تعداد هفته‌های نمایشی -->
+    <div class="section">
+        <div class="example-title">نمونه ۳: تنظیم تعداد هفته‌های نمایشی</div>
+        <input type="text" class="datepicker-input" id="weekCount" placeholder="نمایش 4 هفته">
+        <div class="description">در این مثال، تقویم فقط ۴ هفته را نمایش می‌دهد.</div>
+    </div>
+
+    <!-- نمونه 4: نمایش رویدادها و tooltip -->
+    <div class="section">
+        <div class="example-title">نمونه ۴: نمایش رویدادها و tooltip</div>
+        <input type="text" class="datepicker-input" id="events" placeholder="تقویم با رویدادها">
+        <div class="description">در این مثال، تقویم با رویدادهای مختلف همراه با tooltip نمایش داده می‌شود.</div>
+    </div>
+
+    <!-- نمونه 5: تم مدرن -->
+    <div class="section">
+        <div class="example-title">نمونه ۵: تم مدرن</div>
+        <input type="text" class="datepicker-input" id="modernTheme" placeholder="تقویم با تم مدرن">
+        <div class="description">در این مثال، تقویم با تم مدرن و جدید نمایش داده می‌شود.</div>
+    </div>
+</div>
+
+<script>
+    // تنظیمات مشترک
+    const baseOptions = {
+        initialValue: false,
+        autoClose: true,
+        format: 'YYYY/MM/DD',
+        calendar: {
+            persian: {
+                locale: 'fa'
+            }
+        },
+        onSelect: function (unix) {
+            console.log('تاریخ انتخاب شده:', new persianDate(unix).format('YYYY/MM/DD'));
+        }
+    };
+
+    // نمونه 1: غیرفعال کردن روزهای هفته
+    $('#disabledWeekDays').persianDatepicker($.extend({}, baseOptions, {
+        disabledWeekdays: {
+            enabled: true,
+            list: [5, 6] // پنجشنبه و جمعه
+        }
+    }));
+    $('#disabledDates').persianDatepicker($.extend({}, baseOptions, {
+        disabledDates: {
+            enabled: true,
+            list: [
+                [1404, 1, 14], // 13 فروردین 1402
+                [1404, 1, 16], // 29 اسفند 1402
+                // می‌توانید تاریخ‌های بیشتری اضافه کنید
+            ],
+            // تابع سفارشی برای غیرفعال کردن تاریخ‌های خاص
+            customCheck: function (unix, dateArray) {
+                // غیرفعال کردن روز 13 هر ماه
+                if (dateArray[2] === 13) {
+                    return true; // بله، غیرفعال شود
+                }
+                return false; // خیر، فعال باشد
+            }
+        }
+    }));
+
+    // نمونه 2: غیرفعال کردن تاریخ‌های خاص
+    // $('#disabledDates').persianDatepicker($.extend({}, baseOptions, {
+    //     disabledDates: {
+    //         enabled: true,
+    //         list: [
+    //             [1402, 1, 13], // 13 فروردین 1402
+    //             [1402, 12, 29], // 29 اسفند 1402
+    //             // می‌توانید تاریخ‌های بیشتری اضافه کنید
+    //         ],
+    //         // تابع سفارشی برای مدیریت tooltip
+    //         tooltipHandler: function($container) {
+    //             // در صورتی که می‌خواهید tooltip را به صورت سفارشی مدیریت کنید
+    //             $container.find('.table-days td[data-event="true"]').each(function() {
+    //                 const $td = $(this);
+    //                 const events = $td.data('events');
+    //
+    //                 tippy(this, {
+    //                     content: createTooltipContent(events),
+    //                     allowHTML: true,
+    //                     theme: 'calendar-events',
+    //                     placement: 'top',
+    //                     animation: 'scale',
+    //                     duration: [200, 150]
+    //                 });
+    //             });
+    //
+    //             function createTooltipContent(events) {
+    //                 if (!events || !events.length) return '';
+    //
+    //                 let html = '<div class="event-tooltip-container">';
+    //                 events.forEach(event => {
+    //                     html += `<div class="event-tooltip-item">
+    //                         <div class="event-tooltip-title">${event.title}</div>
+    //                         ${event.description ? `<div class="event-tooltip-desc">${event.description}</div>` : ''}
+    //                     </div>`;
+    //                 });
+    //                 html += '</div>';
+    //
+    //                 return html;
+    //             }
+    //         }
+    //     }
+    // }));
+    //
+    $('#weekCount').persianDatepicker($.extend({}, baseOptions, {
+        displayWeeks: {
+            count: 4 // نمایش 4 هفته به جای 6 هفته پیش‌فرض
+        }
+    }));
+
+    // نمونه 4: نمایش رویدادها و tooltip-->
+    $('#events').persianDatepicker($.extend({}, baseOptions, {
+        events: {
+            enabled: true,
+            showTooltip: true,
+            list: [
+                {
+                    date: [1404, 1, 1],
+                    title: "عید نوروز",
+                    description: "آغاز سال 1404",
+                    className: "holiday",
+                    color: "#e53935"
+                },
+                {
+                    date: [1404, 1, 13],
+                    title: "روز طبیعت",
+                    description: "سیزده به در",
+                    className: "holiday",
+                    color: "#43a047"
+                },
+                {
+                    date: [1404, 3, 15],
+                    title: "جلسه مهم",
+                    description: "جلسه با تیم توسعه - ساعت 10:00",
+                    className: "meeting",
+                    color: "#1e88e5"
+                }
+            ],
+            // تابع سفارشی برای مدیریت tooltip
+            tooltipHandler: function ($container) {
+                // در صورتی که می‌خواهید tooltip را به صورت سفارشی مدیریت کنید
+                $container.find('.table-days td[data-event="true"]').each(function () {
+                    const $td = $(this);
+                    const events = $td.data('events');
+
+                    tippy(this, {
+                        content: createTooltipContent(events),
+                        allowHTML: true,
+                        theme: 'calendar-events',
+                        placement: 'top',
+                        animation: 'scale',
+                        duration: [200, 150]
+                    });
+                });
+
+                function createTooltipContent(events) {
+                    if (!events || !events.length) return '';
+
+                    let html = '<div class="event-tooltip-container">';
+                    events.forEach(event => {
+                        html += `<div class="event-tooltip-item">
+                        <div class="event-tooltip-title">${event.title}</div>
+                        ${event.description ? `<div class="event-tooltip-desc">${event.description}</div>` : ''}
+                    </div>`;
+                    });
+                    html += '</div>';
+
+                    return html;
+                }
+            }
+        }
+    }));
+
+    // نمونه 5: تم مدرن
+    $('#modernTheme').persianDatepicker($.extend({}, baseOptions, {
+        // تم مدرن با استفاده از فایل CSS جدید که ایجاد کردیم
+        // نیازی به تنظیمات خاصی نیست چون فایل CSS به صورت جداگانه لود شده است
+
+        // می‌توانید رویدادها و سایر امکانات را نیز اضافه کنید
+        events: {
+            enabled: true,
+            showTooltip: true,
+            list: [
+                {
+                    date: [1404, 1, 1],
+                    title: "عید نوروز",
+                    className: "holiday"
+                },
+                {
+                    date: [1404, 1, 18],
+                    title: "جلسه مهم",
+                    className: "meeting"
+                },
+                {
+                    date: [1404, 1, 17],
+                    title: "رویداد ویژه",
+                    className: "special"
+                }
+            ]
+        }
+    }));
+</script>
+</body>
+</html>
+
+<!--// نمونه 2: غیرفعال کردن تاریخ‌های خاص-->
+<!--$('#disabledDates').persianDatepicker($.extend({}, baseOptions, {-->
+<!--    disabledDates: {-->
+<!--        enabled: true,-->
+<!--        list: [-->
+<!--            [1402, 1, 13], // 13 فروردین 1402-->
+<!--            [1402, 12, 29], // 29 اسفند 1402-->
+<!--            // می‌توانید تاریخ‌های بیشتری اضافه کنید-->
+<!--        ],-->
+<!--        // تابع سفارشی برای غیرفعال کردن تاریخ‌های خاص-->
+<!--        customCheck: function(unix, dateArray) {-->
+<!--            // غیرفعال کردن روز 13 هر ماه-->
+<!--            if (dateArray[2] === 13) {-->
+<!--                return true; // بله، غیرفعال شود-->
+<!--            }-->
+<!--            return false; // خیر، فعال باشد-->
+<!--        }-->
+<!--    }-->
+<!--}));-->
+
+<!--// نمونه 3: تنظیم تعداد هفته‌های نمایشی-->
+<!--$('#weekCount').persianDatepicker($.extend({}, baseOptions, {-->
+<!--    displayWeeks: {-->
+<!--        count: 4 // نمایش 4 هفته به جای 6 هفته پیش‌فرض-->
+<!--    }-->
+<!--}));-->
+
+<!--&lt;!&ndash;// نمونه 4: نمایش رویدادها و tooltip&ndash;&gt;-->
+<!--$('#events').persianDatepicker($.extend({}, baseOptions, {-->
+<!--    events: {-->
+<!--        enabled: true,-->
+<!--        showTooltip: true,-->
+<!--        list: [-->
+<!--            {-->
+<!--                date: [1402, 1, 1],-->
+<!--                title: "عید نوروز",-->
+<!--                description: "آغاز سال 1402",-->
+<!--                className: "holiday",-->
+<!--                color: "#e53935"-->
+<!--            },-->
+<!--            {-->
+<!--                date: [1402, 1, 13],-->
+<!--                title: "روز طبیعت",-->
+<!--                description: "سیزده به در",-->
+<!--                className: "holiday",-->
+<!--                color: "#43a047"-->
+<!--            },-->
+<!--            {-->
+<!--                date: [1402, 3, 15],-->
+<!--                title: "جلسه مهم",-->
+<!--                description: "جلسه با تیم توسعه - ساعت 10:00",-->
+<!--                className: "meeting",-->
+<!--                color: "#1e88e5"-->
+<!--            }-->
+<!--        ],-->
+<!--        // تابع سفارشی برای مدیریت tooltip-->
+<!--        tooltipHandler: function($container) {-->
+<!--            // در صورتی که می‌خواهید tooltip را به صورت سفارشی مدیریت کنید-->
+<!--            $container.find('.table-days td[data-event="true"]').each(function() {-->
+<!--                const $td = $(this);-->
+<!--                const events = $td.data('events');-->
+<!--                -->
+<!--                tippy(this, {-->
+<!--                    content: createTooltipContent(events),-->
+<!--                    allowHTML: true,-->
+<!--                    theme: 'calendar-events',-->
+<!--                    placement: 'top',-->
+<!--                    animation: 'scale',-->
+<!--                    duration: [200, 150]-->
+<!--                });-->
+<!--            });-->
+<!--            -->
+<!--            function createTooltipContent(events) {-->
+<!--                if (!events || !events.length) return '';-->
+<!--                -->
+<!--                let html = '<div class="event-tooltip-container">';-->
+<!--                events.forEach(event => {-->
+<!--                    html += `<div class="event-tooltip-item">-->
+<!--                        <div class="event-tooltip-title">${event.title}</div>-->
+<!--                        ${event.description ? `<div class="event-tooltip-desc">${event.description}</div>` : ''}-->
+<!--                    </div>`;-->
+<!--                });-->
+<!--                html += '</div>';-->
+<!--                -->
+<!--                return html;-->
+<!--            }-->
+<!--        }-->
+<!--    }-->
+<!--}));-->
+
+<!--// نمونه 5: تم مدرن-->
+<!--$('#modernTheme').persianDatepicker($.extend({}, baseOptions, {-->
+<!--    // تم مدرن با استفاده از فایل CSS جدید که ایجاد کردیم-->
+<!--    // نیازی به تنظیمات خاصی نیست چون فایل CSS به صورت جداگانه لود شده است-->
+<!--    -->
+<!--    // می‌توانید رویدادها و سایر امکانات را نیز اضافه کنید-->
+<!--    events: {-->
+<!--        enabled: true,-->
+<!--        showTooltip: true,-->
+<!--        list: [-->
+<!--            {-->
+<!--                date: [1402, 1, 1],-->
+<!--                title: "عید نوروز",-->
+<!--                className: "holiday"-->
+<!--            },-->
+<!--            {-->
+<!--                date: [1402, 3, 15],-->
+<!--                title: "جلسه مهم",-->
+<!--                className: "meeting"-->
+<!--            },-->
+<!--            {-->
+<!--                date: [1402, 7, 8],-->
+<!--                title: "رویداد ویژه",-->
+<!--                className: "special"-->
+<!--            }-->
+<!--        ]-->
+<!--    }-->
+<!--}));-->

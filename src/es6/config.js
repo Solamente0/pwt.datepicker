@@ -170,7 +170,7 @@ const Config = {
      */
     'formatter': function (unixDate) {
         let self = this,
-          pdate = this.model.PersianDate.date(unixDate);
+            pdate = this.model.PersianDate.date(unixDate);
         return pdate.format(self.format);
     },
 
@@ -218,15 +218,14 @@ const Config = {
      */
     'altFieldFormatter': function (unixDate) {
         let self = this,
-          thisAltFormat = self.altFormat.toLowerCase(),
-          pd;
+            thisAltFormat = self.altFormat.toLowerCase(),
+            pd;
         if (thisAltFormat === 'gregorian' || thisAltFormat === 'g') {
             return new Date(unixDate);
         }
         if (thisAltFormat === 'unix' || thisAltFormat === 'u') {
             return unixDate;
-        }
-        else {
+        } else {
             pd = this.model.PersianDate.date(unixDate);
             return pd.format(self.altFormat);
         }
@@ -327,7 +326,7 @@ const Config = {
          * @description Called when navigator switch
          * @event
          * @example function (datepickerObject) {
-                // console.log('navigator switch ');
+         // console.log('navigator switch ');
          *  }
          */
         'onSwitch': function (datepickerObject) {
@@ -1018,7 +1017,93 @@ const Config = {
      * @type {number}
      * @default 800
      */
-    'inputDelay': 800
+    'inputDelay': 800,
+    'disabledWeekdays': {
+        /**
+         * @description فعال یا غیرفعال کردن محدودیت روزهای هفته
+         * @type boolean
+         * @default false
+         */
+        'enabled': false,
+
+        /**
+         * @description لیست روزهای غیر فعال هفته، از 0 (شنبه) تا 6 (جمعه)
+         * @type array
+         * @default []
+         * @example [0, 6] // غیرفعال کردن شنبه و جمعه
+         */
+        'list': []
+    },
+    'disabledDates': {
+        /**
+         * @description فعال یا غیرفعال کردن محدودیت تاریخ‌های خاص
+         * @type boolean
+         * @default false
+         */
+        'enabled': false,
+
+        /**
+         * @description لیست تاریخ‌های غیر فعال، به صورت unix timestamp یا آرایه‌ای از [سال، ماه، روز]
+         * @type array
+         * @default []
+         * @example [[1400, 1, 13], [1400, 12, 29]] // غیرفعال کردن 13 فروردین و 29 اسفند 1400
+         */
+        'list': [],
+
+        /**
+         * @description تابع سفارشی برای بررسی تاریخ‌های غیرفعال
+         * @type function
+         * @default null
+         */
+        'customCheck': null
+    },
+    'displayWeeks': {
+        /**
+         * @description تعداد هفته‌های نمایش داده شده در تقویم
+         * @type number
+         * @default 6
+         * @example 4 // نمایش 4 هفته در تقویم
+         */
+        'count': 6
+    },
+    'events': {
+        /**
+         * @description فعال یا غیرفعال کردن نمایش رویدادها
+         * @type boolean
+         * @default false
+         */
+        'enabled': false,
+
+        /**
+         * @description لیست رویدادها به صورت آبجکت شامل تاریخ، عنوان، کلاس سفارشی و غیره
+         * @type array
+         * @default []
+         * @example [
+         *   {
+         *     date: [1400, 1, 1],
+         *     title: "سال نو",
+         *     description: "آغاز سال 1400",
+         *     className: "holiday",
+         *     color: "#e91e63"
+         *   }
+         * ]
+         */
+        'list': [],
+
+        /**
+         * @description فعال یا غیرفعال کردن tooltip برای نمایش جزئیات رویداد
+         * @type boolean
+         * @default true
+         */
+        'showTooltip': true,
+
+        /**
+         * @description تابع سفارشی برای مدیریت نمایش tooltip
+         * @type function
+         * @default null
+         */
+        'tooltipHandler': null
+    },
 };
 
 module.exports = Config;

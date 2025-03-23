@@ -1,10 +1,9 @@
 const webpackConfig = require('./webpack.config.js');
 const webpackDevConfig = require('./webpack.config.dev.js');
-const dartSass = require('sass');
+const sass = require('node-sass');
 
 module.exports = function (grunt) {
     require('load-grunt-tasks')(grunt);
-
     // Project configuration.
     grunt.initConfig({
         banner: '/*\n' +
@@ -27,16 +26,13 @@ module.exports = function (grunt) {
         pkg: grunt.file.readJSON('package.json'),
         sass: {
             dev: {
-                options: {
-                    implementation: dartSass
-                },
                 files: {
                     'dist/css/<%= pkg.name %>.css': 'src/sass/persian-datepicker.scss'
                 }
             },
             prod: {
                 options: {
-                    implementation: dartSass,
+                    implementation: sass,
                     outputStyle: 'compressed',
                     sourceMap: true
                 },
@@ -46,7 +42,6 @@ module.exports = function (grunt) {
             },
             theme: {
                 options: {
-                    implementation: dartSass,
                     outputStyle: 'compressed',
                     sourceMap: true
                 },

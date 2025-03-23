@@ -1,20 +1,23 @@
 // https://webpack.js.org/configuration/
 const minimize = true;
+const TerserPlugin = require('terser-webpack-plugin');
 let webpack = require('webpack'),
     path = require('path'),
     pkg = require("./package.json"),
     fileName = pkg.name + ".js",
     plugins = [
         new webpack.DefinePlugin({
-            __VERSION__: JSON.stringify(pkg.version)
+            "VERSION": JSON.stringify(pkg.version)
         })
     ];
 
+// Determine filename based on minimize flag
 if (minimize) {
-    plugins.push(new webpack.optimize.UglifyJsPlugin());
     fileName = pkg.name + ".min.js";
 }
+
 module.exports = {
+    mode: 'production', // Adding mode explicitly
     entry: "./src/es6/index.js", // string | object | array
     output: {
         library: "persianDatepicker",
@@ -25,7 +28,7 @@ module.exports = {
     devServer: {
         contentBase: path.join(__dirname, "/"),
         port: 3000,
-        host : 'localhost'
+        host: 'localhost'
     },
     module: {
         rules: [
@@ -40,10 +43,26 @@ module.exports = {
                 use: {
                     loader: 'babel-loader',
                     options: {
-                        presets: ['es2015']
+                        "presets": ["@babel/preset-env"]
                     }
                 }
             }
+        ]
+    },
+    optimization: {
+        minimize: minimize,
+        minimizer: [
+            new TerserPlugin({
+                terserOptions: {
+                    format: {
+                        comments: false,
+                    },
+                    compress: {
+                        drop_console: true
+                    }
+                },
+                extractComments: false
+            })
         ]
     },
     plugins: plugins

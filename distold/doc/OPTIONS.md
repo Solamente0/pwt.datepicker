@@ -424,7 +424,7 @@ Called when navigator switch
 **Example**  
 ```js
 function (datepickerObject) {
-         // console.log('navigator switch ');
+                // console.log('navigator switch ');
  }
 ```
 <a name="Config.toolbox"></a>

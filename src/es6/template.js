@@ -26,14 +26,14 @@ const Template = `
                 <table cellspacing="0" class="table-days">
                     <tbody>
                         {{#days.list}}
-                           
                             <tr>
                                 {{#.}}
                                     {{#enabled}}
-                                        <td data-date="{{dataDate}}" data-unix="{{dataUnix}}" >
-                                            <span  class="{{#otherMonth}}other-month{{/otherMonth}}">{{title}}</span>
+                                        <td data-date="{{dataDate}}" data-unix="{{dataUnix}}" {{#hasEvent}}data-event="true"{{/hasEvent}}>
+                                            <span class="{{#otherMonth}}other-month{{/otherMonth}} {{className}}">{{title}}</span>
+                                            {{#hasEvent}}<i class="event-indicator"></i>{{/hasEvent}}
                                             {{#altCalendarShowHint}}
-                                            <i  class="alter-calendar-day">{{alterCalTitle}}</i>
+                                            <i class="alter-calendar-day">{{alterCalTitle}}</i>
                                             {{/altCalendarShowHint}}
                                         </td>
                                     {{/enabled}}
@@ -41,11 +41,10 @@ const Template = `
                                         <td data-date="{{dataDate}}" data-unix="{{dataUnix}}" class="disabled">
                                             <span class="{{#otherMonth}}other-month{{/otherMonth}}">{{title}}</span>
                                             {{#altCalendarShowHint}}
-                                            <i  class="alter-calendar-day">{{alterCalTitle}}</i>
+                                            <i class="alter-calendar-day">{{alterCalTitle}}</i>
                                             {{/altCalendarShowHint}}
                                         </td>
                                     {{/enabled}}
-                                    
                                 {{/.}}
                             </tr>
                         {{/days.list}}

@@ -1,15 +1,33 @@
 // https://webpack.js.org/configuration/
+const minimize = true;
+const TerserPlugin = require('terser-webpack-plugin');
+
 let webpack = require('webpack'),
-path = require('path'),
-pkg = require("./package.json"),
-fileName = pkg.name + ".js",
-plugins = [
-    new webpack.DefinePlugin({
-        __VERSION__: JSON.stringify(pkg.version)
+    path = require('path'),
+    pkg = require("./package.json"),
+    fileName = pkg.name + ".js",
+    plugins = [
+        new webpack.DefinePlugin({
+            __VERSION__: JSON.stringify(pkg.version)
+        })
+    ];
+new webpack.optimize.UglifyJsPlugin({
+  // options
+})
+
+if (minimize) {
+    plugins.push(new webpack.optimize.UglifyJsPlugin());
+    fileName = pkg.name + ".min.js";
+}
+
+optimization: {
+  minimizer: [
+    new TerserPlugin({
+      // options
     })
-];
+  ]
+}
 module.exports = {
-    mode: 'development', // Added mode explicitly
     entry: "./src/es6/index.js", // string | object | array
     output: {
         library: "persianDatepicker",
@@ -19,7 +37,8 @@ module.exports = {
     },
     devServer: {
         contentBase: path.join(__dirname, "/"),
-        port: 3000
+        port: 3000,
+        host : 'localhost'
     },
     module: {
         rules: [
@@ -34,7 +53,7 @@ module.exports = {
                 use: {
                     loader: 'babel-loader',
                     options: {
-                        "presets": ["@babel/preset-env"] // Updated to use modern preset
+                        presets: ['es2015']
                     }
                 }
             }

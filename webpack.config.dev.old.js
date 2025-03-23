@@ -1,15 +1,14 @@
 // https://webpack.js.org/configuration/
 let webpack = require('webpack'),
-path = require('path'),
-pkg = require("./package.json"),
-fileName = pkg.name + ".js",
-plugins = [
-    new webpack.DefinePlugin({
-        __VERSION__: JSON.stringify(pkg.version)
-    })
-];
+    path = require('path'),
+    pkg = require("./package.json"),
+    fileName = pkg.name + ".js",
+    plugins = [
+        new webpack.DefinePlugin({
+            __VERSION__: JSON.stringify(pkg.version)
+        })
+    ];
 module.exports = {
-    mode: 'development', // Added mode explicitly
     entry: "./src/es6/index.js", // string | object | array
     output: {
         library: "persianDatepicker",
@@ -34,7 +33,7 @@ module.exports = {
                 use: {
                     loader: 'babel-loader',
                     options: {
-                        "presets": ["@babel/preset-env"] // Updated to use modern preset
+                        presets: ['es2015']
                     }
                 }
             }
