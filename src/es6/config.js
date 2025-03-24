@@ -1103,7 +1103,7 @@ const Config = {
          * @default null
          */
         'tooltipHandler': null
-    },
+    }
 };
 
 module.exports = Config;
