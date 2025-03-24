@@ -605,31 +605,106 @@ class View {
         }
         return [cal, loc];
     }
-
     _initEventTooltips() {
         if (!this.model.options.events || !this.model.options.events.enabled || !this.model.options.events.showTooltip) {
             return;
         }
-
-        // اگر از کتابخانه tippy.js استفاده می‌شود
-        if (typeof tippy !== 'undefined') {
-            this.$container.find('.table-days td[data-event="true"]').each(function () {
-                tippy(this, {
-                    content: $(this).find('.event-tooltip').html(),
-                    allowHTML: true,
-                    theme: 'datepicker-events',
-                    placement: 'top',
-                    animation: 'scale',
-                    duration: [200, 150]
+        
+        const self = this;
+        
+        if (typeof tippy === 'undefined') {
+            // بارگذاری Popper.js (پیش‌نیاز Tippy.js)
+            this._loadScript('https://unpkg.com/@popperjs/core@2', function() {
+                // بارگذاری Tippy.js
+                self._loadScript('https://unpkg.com/tippy.js@6', function() {
+                    self._initTippyTooltips();
                 });
             });
-        }
-        // یا استفاده از تابع سفارشی tooltip
-        else if (typeof this.model.options.events.tooltipHandler === 'function') {
-            this.model.options.events.tooltipHandler(this.$container);
+        } else {
+            this._initTippyTooltips();
         }
     }
+    
+    _loadScript(src, callback) {
+        const script = document.createElement('script');
+        script.src = src;
+        script.onload = callback;
+        document.head.appendChild(script);
+    }
+    
+    _initTippyTooltips() {
+        this.$container.find('.table-days td[data-event="true"]').each(function () {
+            tippy(this, {
+                content: $(this).find('.event-tooltip').html(),
+                allowHTML: true,
+                theme: 'datepicker-events',
+                placement: 'top',
+                animation: 'scale',
+                duration: [200, 150]
+            });
+        });
+    }
 
+    // یک راه‌حل ساده بدون کتابخانه خارجی
+    _initSimpleTooltip() {
+        const $container = this.$container;
+        
+        // اضافه کردن استایل در صورت نیاز
+        if (!$('#simple-tooltip-style').length) {
+            $('head').append(`
+                <style id="simple-tooltip-style">
+                    .simple-tooltip {
+                        position: absolute;
+                        display: none;
+                        background-color: #333;
+                        color: white;
+                        padding: 5px 10px;
+                        border-radius: 4px;
+                        z-index: 1000;
+                        max-width: 200px;
+                        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+                    }
+                    .simple-tooltip:after {
+                        content: '';
+                        position: absolute;
+                        bottom: -5px;
+                        left: 50%;
+                        margin-left: -5px;
+                        border-width: 5px 5px 0;
+                        border-style: solid;
+                        border-color: #333 transparent transparent transparent;
+                    }
+                </style>
+            `);
+        }
+        
+        // ایجاد المان tooltip
+        if (!$container.find('.simple-tooltip').length) {
+            $container.append('<div class="simple-tooltip"></div>');
+        }
+        
+        const $tooltip = $container.find('.simple-tooltip');
+        
+        // اضافه کردن رویدادها
+        $container.find('.table-days td[data-event="true"]').each(function() {
+            const $td = $(this);
+            
+            $td.on('mouseenter', function(e) {
+                const tooltipContent = $td.find('.event-tooltip').html();
+                if (tooltipContent) {
+                    $tooltip.html(tooltipContent).css({
+                        display: 'block',
+                        top: $td.offset().top - $tooltip.outerHeight() - 10,
+                        left: $td.offset().left + ($td.outerWidth() / 2) - ($tooltip.outerWidth() / 2)
+                    });
+                }
+            });
+            
+            $td.on('mouseleave', function() {
+                $tooltip.hide();
+            });
+        });
+    }
     /**
      * @desc render times area, prevent performance issue with scroll and time section
      */

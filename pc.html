@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Persian Datepicker - نمونه پیشرفته با تم روشن و تاریک</title>
+
+    <!-- فونت وزیر -->
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/font-face.css" rel="stylesheet"
+        type="text/css" />
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Persian Date -->
+    <script src="https://cdn.jsdelivr.net/npm/persian-date@1.1.0/dist/persian-date.min.js"></script>
+
+    <!-- Persian Datepicker -->
+    <link rel="stylesheet" href="dist/css/persian-datepicker.min.css">
+    <link rel="stylesheet" href="dist/css/theme/persian-datepicker-modern2.css">
+    <script src="dist/js/persian-datepicker.min.js"></script>
+
+    <!-- Tippy.js برای tooltip بهتر -->
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+
+    <style>
+        :root {
+            --bg-color: #f5f5f5;
+            --container-bg: #ffffff;
+            --text-color: #333333;
+            --muted-text-color: #666666;
+            --border-color: #eeeeee;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --header-color: #2196f3;
+            --container-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            --input-border: #dddddd;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #121212;
+            --container-bg: #1e1e1e;
+            --text-color: #e0e0e0;
+            --muted-text-color: #aaaaaa;
+            --border-color: #333333;
+            --shadow-color: rgba(0, 0, 0, 0.3);
+            --header-color: #64b5f6;
+            --container-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            --input-border: #444444;
+        }
+
+        body {
+            font-family: 'Vazir', Tahoma, Arial, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+            color: var(--text-color);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: var(--container-bg);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: var(--container-shadow);
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .theme-switcher {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        .theme-btn {
+            background-color: var(--header-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: background-color 0.3s ease;
+        }
+
+        .theme-btn:hover {
+            opacity: 0.9;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--text-color);
+            margin-bottom: 30px;
+            transition: color 0.3s ease;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            transition: border-color 0.3s ease;
+        }
+
+        .example-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: var(--header-color);
+            transition: color 0.3s ease;
+        }
+
+        .datepicker-input {
+            width: 250px;
+            padding: 8px 12px;
+            border: 1px solid var(--input-border);
+            border-radius: 4px;
+            font-family: inherit;
+            margin-bottom: 10px;
+            background-color: var(--container-bg);
+            color: var(--text-color);
+            transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .description {
+            margin-top: 15px;
+            color: var(--muted-text-color);
+            font-size: 14px;
+            transition: color 0.3s ease;
+        }
+
+        /* سفارشی کردن رویدادها */
+        .holiday {
+            background-color: rgba(255, 86, 86, 0.1) !important;
+        }
+
+        .meeting {
+            background-color: rgba(33, 150, 243, 0.1) !important;
+        }
+
+        .special {
+            background-color: rgba(76, 175, 80, 0.1) !important;
+        }
+
+        /* حالت تاریک برای رویدادها */
+        [data-theme="dark"] .holiday {
+            background-color: rgba(255, 86, 86, 0.2) !important;
+        }
+
+        [data-theme="dark"] .meeting {
+            background-color: rgba(33, 150, 243, 0.2) !important;
+        }
+
+        [data-theme="dark"] .special {
+            background-color: rgba(76, 175, 80, 0.2) !important;
+        }
+
+        /* استایل tooltip سفارشی برای رویدادها */
+        .tippy-box[data-theme~='calendar-events'] {
+            background-color: #333;
+            color: white;
+            border-radius: 4px;
+        }
+
+        .tippy-box[data-theme~='calendar-events'] .tippy-arrow {
+            color: #333;
+        }
+
+        .event-tooltip-item {
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .event-tooltip-item:last-child {
+            border-bottom: none;
+        }
+
+        .event-tooltip-title {
+            font-weight: bold;
+            margin-bottom: 3px;
+        }
+
+        .event-tooltip-desc {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        /* حالت تاریک برای tooltip */
+        [data-theme="dark"] .tippy-box[data-theme~='calendar-events'] {
+            background-color: #424242;
+        }
+
+        [data-theme="dark"] .tippy-box[data-theme~='calendar-events'] .tippy-arrow {
+            color: #424242;
+        }
+
+        /* مخفی کردن اسکرول مختلف */
+        .datepicker-container {
+            z-index: 1000 !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="theme-switcher">
+            <button id="themeToggle" class="theme-btn">تغییر به حالت تاریک</button>
+        </div>
+        
+        <h1>نمونه استفاده از Persian Datepicker</h1>
+
+        <!-- نمونه 1: غیرفعال کردن روزهای هفته -->
+        <div class="section">
+            <div class="example-title">نمونه ۱: غیرفعال کردن روزهای هفته</div>
+            <input type="text" class="datepicker-input" id="disabledWeekDays"
+                placeholder="روزهای پنجشنبه و جمعه غیرفعال">
+            <div class="description">در این مثال، روزهای پنجشنبه و جمعه (۵ و ۶) غیرفعال شده‌اند.</div>
+        </div>
+
+        <!-- نمونه 2: غیرفعال کردن تاریخ‌های خاص -->
+        <div class="section">
+            <div class="example-title">نمونه ۲: غیرفعال کردن تاریخ‌های خاص</div>
+            <input type="text" class="datepicker-input" id="disabledDates" placeholder="برخی تاریخ‌های خاص غیرفعال">
+            <div class="description">در این مثال، تاریخ‌های ۱۳ هر ماه و برخی مناسبت‌های خاص غیرفعال شده‌اند.</div>
+        </div>
+
+        <!-- نمونه 3: تنظیم تعداد هفته‌های نمایشی -->
+        <div class="section">
+            <div class="example-title">نمونه ۳: تنظیم تعداد هفته‌های نمایشی</div>
+            <input type="text" class="datepicker-input" id="weekCount" placeholder="نمایش 4 هفته">
+            <div class="description">در این مثال، تقویم فقط ۴ هفته را نمایش می‌دهد.</div>
+        </div>
+
+        <!-- نمونه 4: نمایش رویدادها و tooltip -->
+        <div class="section">
+            <div class="example-title">نمونه ۴: نمایش رویدادها و tooltip</div>
+            <input type="text" class="datepicker-input" id="events" placeholder="تقویم با رویدادها">
+            <div class="description">در این مثال، تقویم با رویدادهای مختلف همراه با tooltip نمایش داده می‌شود.</div>
+        </div>
+
+        <!-- نمونه 5: تم مدرن -->
+        <div class="section">
+            <div class="example-title">نمونه ۵: تم مدرن</div>
+            <input type="text" class="datepicker-input" id="modernTheme" placeholder="تقویم با تم مدرن">
+            <div class="description">در این مثال، تقویم با تم مدرن و جدید نمایش داده می‌شود.</div>
+        </div>
+    </div>
+
+    <script>
+        // متغیر برای نگهداری نمونه‌های تقویم
+        let datepickers = {
+            disabledWeekDays: null,
+            disabledDates: null,
+            weekCount: null,
+            events: null,
+            modernTheme: null
+        };
+
+        // تنظیمات مشترک
+        const baseOptions = {
+            initialValue: false,
+            autoClose: true,
+            format: 'YYYY/MM/DD',
+            calendar: {
+                persian: {
+                    locale: 'fa'
+                }
+            },
+            onSelect: function (unix) {
+                console.log('تاریخ انتخاب شده:', new persianDate(unix).format('YYYY/MM/DD'));
+            }
+        };
+        
+        // تابع برای ایجاد تقویم‌ها با تم فعلی
+        function initializeDatepickers(theme) {
+            // نابود کردن نمونه‌های قبلی در صورت وجود
+            destroyDatepickers();
+
+            // اضافه کردن کلاس تم به تنظیمات اصلی
+            const themeOptions = { ...baseOptions };
+            if (theme === 'dark') {
+                themeOptions.containerClass = 'pdp-dark';
+            } else {
+                themeOptions.containerClass = 'pdp-light';
+            }
+            
+            // نمونه 1: غیرفعال کردن روزهای هفته
+            datepickers.disabledWeekDays = $('#disabledWeekDays').persianDatepicker($.extend({}, themeOptions, {
+                disabledWeekdays: {
+                    enabled: true,
+                    list: [5, 6] // پنجشنبه و جمعه
+                }
+            }));
+
+            // نمونه 2: غیرفعال کردن تاریخ‌های خاص
+            datepickers.disabledDates = $('#disabledDates').persianDatepicker($.extend({}, themeOptions, {
+                disabledDates: {
+                    enabled: true,
+                    list: [
+                        [1404, 1, 14], // 14 فروردین 1404
+                        [1404, 1, 16], // 16 فروردین 1404
+                    ],
+                    customCheck: function (unix, dateArray) {
+                        // غیرفعال کردن روز 13 هر ماه
+                        if (dateArray[2] === 13) {
+                            return true; // بله، غیرفعال شود
+                        }
+                        
+                        // غیرفعال کردن محدوده‌های تاریخ
+                        // فرض کنید داده‌های زیر از API دریافت شده‌اند
+                        const dateRanges = [
+                            ["1404/01/02", "1404/01/05"],
+                            ["1404/01/10", "1404/01/15"],
+                            ["1404/02/05", "1404/02/10"]
+                        ];
+                        
+                        // بررسی همه محدوده‌های تاریخ
+                        for (let i = 0; i < dateRanges.length; i++) {
+                            const startDate = dateRanges[i][0].split('/').map(Number);
+                            const endDate = dateRanges[i][1].split('/').map(Number);
+                            
+                            if (isDateInRange(dateArray, startDate, endDate)) {
+                                return true; // بله، غیرفعال شود
+                            }
+                        }
+                        
+                        return false; // خیر، فعال باشد
+                    }
+                }
+            }));
+
+            // نمونه 3: تنظیم تعداد هفته‌های نمایشی
+            datepickers.weekCount = $('#weekCount').persianDatepicker($.extend({}, themeOptions, {
+                displayWeeks: {
+                    count: 4 // نمایش 4 هفته به جای 6 هفته پیش‌فرض
+                }
+            }));
+
+            // نمونه 4: نمایش رویدادها و tooltip
+            datepickers.events = $('#events').persianDatepicker($.extend({}, themeOptions, {
+                events: {
+                    enabled: true,
+                    showTooltip: true,
+                    list: [
+                        {
+                            date: [1404, 1, 1],
+                            title: "عید نوروز",
+                            description: "آغاز سال 1404",
+                            className: "holiday",
+                            color: "#e53935"
+                        },
+                        {
+                            date: [1404, 1, 13],
+                            title: "روز طبیعت",
+                            description: "سیزده به در",
+                            className: "holiday",
+                            color: "#43a047"
+                        },
+                        {
+                            date: [1404, 3, 15],
+                            title: "جلسه مهم",
+                            description: "جلسه با تیم توسعه - ساعت 10:00",
+                            className: "meeting",
+                            color: "#1e88e5"
+                        }
+                    ],
+                    // تابع سفارشی برای مدیریت tooltip
+                    tooltipHandler: function ($container) {
+                        console.log("Container tooltip", $container);
+                        // در صورتی که می‌خواهید tooltip را به صورت سفارشی مدیریت کنید
+                        $container.find('.table-days td[data-event="true"]').each(function () {
+                            const $td = $(this);
+                            const events = $td.data('events');
+
+                            try {
+                                tippy(this, {
+                                    content: createTooltipContent(events),
+                                    allowHTML: true,
+                                    theme: 'calendar-events',
+                                    placement: 'top',
+                                    animation: 'scale',
+                                    duration: [200, 150]
+                                });
+                            } catch (error) {
+                                console.warn('Error initializing tippy:', error);
+                                // راه‌حل جایگزین در صورت خطا
+                                simpleTooltip($container);
+                            }
+                        });
+
+                        function createTooltipContent(events) {
+                            console.log("events", events);
+                            if (!events || !events.length) return '';
+
+                            let html = '<div class="event-tooltip-container">';
+                            events.forEach(event => {
+                                html += `<div class="event-tooltip-item">
+                                <div class="event-tooltip-title">${event.title}</div>
+                                ${event.description ? `<div class="event-tooltip-desc">${event.description}</div>` : ''}
+                            </div>`;
+                            });
+                            html += '</div>';
+
+                            return html;
+                        }
+                    }
+                }
+            }));
+
+            // نمونه 5: تم مدرن
+            datepickers.modernTheme = $('#modernTheme').persianDatepicker($.extend({}, themeOptions, {
+                // می‌توانید رویدادها و سایر امکانات را نیز اضافه کنید
+                events: {
+                    enabled: true,
+                    showTooltip: true,
+                    list: [
+                        {
+                            date: [1404, 1, 1],
+                            title: "عید نوروز",
+                            description: "عید نوروز نوروز نوروز نوروز نوروز ",
+                            className: "holiday"
+                        },
+                        {
+                            date: [1404, 1, 18],
+                            title: "جلسه مهم",
+                            description: "عید نوروز نوروز نوروز نوروز نوروز ",
+
+                            className: "meeting"
+                        },
+                        {
+                            date: [1404, 1, 17],
+                            title: "رویداد ویژه",
+                            description: "عید نوروز نوروز نوروز نوروز نوروز ",
+
+                            className: "special"
+                        }
+                    ]
+                }
+            }));
+        }
+
+
+        // تابع کمکی برای بررسی آیا یک تاریخ در محدوده قرار دارد
+        function isDateInRange(date, startDate, endDate) {
+            // تبدیل تاریخ‌ها به اعداد برای مقایسه آسان‌تر
+            const dateValue = date[0] * 10000 + date[1] * 100 + date[2];
+            const startValue = startDate[0] * 10000 + startDate[1] * 100 + startDate[2];
+            const endValue = endDate[0] * 10000 + endDate[1] * 100 + endDate[2];
+            
+            // چک کردن آیا تاریخ بین شروع و پایان است (شامل خود تاریخ‌های شروع و پایان)
+            return dateValue >= startValue && dateValue <= endValue;
+        }
+        // تابع برای نابود کردن نمونه‌های تقویم
+        function destroyDatepickers() {
+            for (let key in datepickers) {
+                if (datepickers[key] && typeof datepickers[key].destroy === 'function') {
+                    datepickers[key].destroy();
+                }
+            }
+        }
+
+        // تابع برای ساخت tooltip ساده در صورت نیاز
+        function simpleTooltip($container) {
+            if ($('#simple-tooltip-style').length === 0) {
+                $('head').append(`
+                    <style id="simple-tooltip-style">
+                        .simple-tooltip {
+                            position: absolute;
+                            display: none;
+                            background-color: #333;
+                            color: white;
+                            padding: 10px 30px;
+                            border-radius: 4px;
+                            z-index: 1000;
+                            max-width: 200px;
+                            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+                        }
+                        [data-theme="dark"] .simple-tooltip {
+                            background-color: #424242;
+                        }
+                    </style>
+                `);
+            }
+
+            if ($container.find('.simple-tooltip').length === 0) {
+                $container.append('<div class="simple-tooltip"></div>');
+            }
+
+            const $tooltip = $container.find('.simple-tooltip');
+
+            $container.find('.table-days td[data-event="true"]').each(function () {
+                const $td = $(this);
+                const events = $td.data('events');
+
+                $td.on('mouseenter', function () {
+                    let html = '<div class="event-tooltip-container">';
+                    events.forEach(event => {
+                        html += `<div class="event-tooltip-item">
+                            <div class="event-tooltip-title">${event.title}</div>
+                            ${event.description ? `<div class="event-tooltip-desc">${event.description}</div>` : ''}
+                        </div>`;
+                    });
+                    html += '</div>';
+
+                    $tooltip.html(html).css({
+                        display: 'block',
+                        top: $td.offset().top - $tooltip.outerHeight() - 10,
+                        left: $td.offset().left + ($td.outerWidth() / 2) - ($tooltip.outerWidth() / 2)
+                    });
+                });
+
+                $td.on('mouseleave', function () {
+                    $tooltip.hide();
+                });
+            });
+        }
+
+        // تابع برای تغییر تم
+        function toggleTheme() {
+            const body = document.body;
+            const themeToggle = document.getElementById('themeToggle');
+            
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                themeToggle.textContent = 'تغییر به حالت تاریک';
+                initializeDatepickers('light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                themeToggle.textContent = 'تغییر به حالت روشن';
+                initializeDatepickers('dark');
+            }
+        }
+
+        // تنظیم رویداد کلیک برای دکمه تغییر تم
+        document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+
+        // بررسی تنظیمات تم تاریک سیستم
+        function checkSystemTheme() {
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.body.setAttribute('data-theme', 'dark');
+                document.getElementById('themeToggle').textContent = 'تغییر به حالت روشن';
+                initializeDatepickers('dark');
+            } else {
+                initializeDatepickers('light');
+            }
+        }
+
+        // بررسی اولیه تم سیستم
+        checkSystemTheme();
+
+        // گوش دادن به تغییرات تم سیستم
+        if (window.matchMedia) {
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (e) {
+                if (e.matches) {
+                    document.body.setAttribute('data-theme', 'dark');
+                    document.getElementById('themeToggle').textContent = 'تغییر به حالت روشن';
+                    initializeDatepickers('dark');
+                } else {
+                    document.body.removeAttribute('data-theme');
+                    document.getElementById('themeToggle').textContent = 'تغییر به حالت تاریک';
+                    initializeDatepickers('light');
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>
