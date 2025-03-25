@@ -51,7 +51,8 @@
   },
   "dependencies": {
     "jquery": "^3.7.1",
-    "persian-date": "next"
+    "persian-date": "next",
+    "prettier": "^3.5.3"
   },
   "pre-commit": [
     "test"
