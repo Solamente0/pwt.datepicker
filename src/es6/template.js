@@ -29,13 +29,13 @@ const Template = `
                             <tr>
                                 {{#.}}
                                     {{#enabled}}
-                                        <td data-date="{{dataDate}}" data-unix="{{dataUnix}}" {{#hasEvent}}data-event="true" data-events={{#events}}{title:'{{title}}',description:'{{description}}',className:'{{className}}',color:'{{color}}'}{{^last}},{{/last}}{{/events}} {{/hasEvent}} class="{{#selected}}selected{{/selected}} {{className}}">
-                                            <span class="{{#otherMonth}}other-month{{/otherMonth}} {{className}}">{{title}}</span>
-                                            {{#hasEvent}}<i class="event-indicator"></i>{{/hasEvent}}
-                                            {{#altCalendarShowHint}}
-                                            <i class="alter-calendar-day">{{alterCalTitle}}</i>
-                                            {{/altCalendarShowHint}}
-                                        </td>
+                                      <td data-date="{{dataDate}}" data-unix="{{dataUnix}}" {{#hasEvent}}data-event="true" data-events='{{events}}'{{/hasEvent}} class="{{#selected}}selected{{/selected}} {{className}}">
+                                        <span class="{{#otherMonth}}other-month{{/otherMonth}} {{className}}">{{title}}</span>
+                                        {{#hasEvent}}<i class="event-indicator"></i>{{/hasEvent}}
+                                        {{#altCalendarShowHint}}
+                                        <i class="alter-calendar-day">{{alterCalTitle}}</i>
+                                        {{/altCalendarShowHint}}
+                                      </td> 
                                     {{/enabled}}
                                     {{^enabled}}
                                         <td data-date="{{dataDate}}" data-unix="{{dataUnix}}" class="disabled {{className}}">

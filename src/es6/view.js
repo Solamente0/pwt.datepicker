@@ -503,14 +503,11 @@ class View {
         };
 
         if (events && events.length > 0) {
-          dayObject.events = events;
-          console.log("events in _getDayViewModel", events);
-          // dayObject.events = JSON.stringify(events);
-          dayObject.hasEvent = events.length > 0;
-
+          // Store events properly - stringify to ensure proper data attribute setting
+          dayObject.events = JSON.stringify(events);
           dayObject.hasEvent = true;
 
-          // Add className for styling
+          // Apply CSS class from event for styling
           if (events[0].className) {
             dayObject.className = events[0].className;
           }
@@ -724,6 +721,8 @@ class View {
     return [cal, loc];
   }
 
+  // Replace the _initEventTooltips method in src/es6/view.js with this implementation:
+
   _initEventTooltips() {
     if (
       !this.model.options.events ||
@@ -739,59 +738,134 @@ class View {
       return;
     }
 
-    const self = this;
+    // Clean up any existing tooltip handlers to prevent duplicates
+    this.$container
+      .find('.table-days td[data-event="true"]')
+      .off("mouseenter mouseleave");
 
-    // Try to use tippy.js if available
+    // Try to use tippy.js if available or fall back to simple tooltip
     if (typeof window.tippy !== "undefined") {
       this._initTippyTooltips();
     } else {
-      // Fallback to simple tooltip
       this._initSimpleTooltip();
     }
   }
 
+  // Replace the _initTippyTooltips method with this improved version
   _initTippyTooltips() {
     const self = this;
+
+    // Find all day cells with events
+    this.$container.find('.table-days td[data-event="true"]').each(function () {
+      const $td = $(this);
+      let events;
+
+      try {
+        // Try to get events from the data attribute
+        events = $td.data("events");
+
+        // Handle case where events are stored as a string (JSON parse needed)
+        if (typeof events === "string") {
+          events = JSON.parse(events);
+        }
+      } catch (e) {
+        console.warn("Error parsing event data:", e);
+        return; // Skip this element if data can't be parsed
+      }
+
+      // Ensure events is an array with content
+      if (!events || !Array.isArray(events) || events.length === 0) {
+        return;
+      }
+
+      // Create tooltip content
+      const content = self._createTooltipContent(events);
+
+      // Initialize tippy on this element
+      try {
+        tippy(this, {
+          content: content,
+          allowHTML: true,
+          theme: "calendar-events",
+          placement: "top",
+          animation: "scale",
+          duration: [200, 150],
+          appendTo: document.body, // Ensures tooltip is not constrained within container
+        });
+      } catch (error) {
+        console.warn("Error initializing tippy:", error);
+        // Fall back to simple tooltip
+        self._initSimpleTooltip();
+      }
+    });
+  }
+
+  // Replace the _initSimpleTooltip method with this more robust version
+  _initSimpleTooltip() {
+    // Ensure we have a tooltip container
+    if ($("#calendar-tooltip").length === 0) {
+      $("body").append(
+        '<div id="calendar-tooltip" class="simple-tooltip"></div>',
+      );
+    }
+
+    const $tooltip = $("#calendar-tooltip");
 
     // Use event delegation for better performance
     this.$container.on(
       "mouseenter",
       '.table-days td[data-event="true"]',
-      function () {
+      function (e) {
         const $td = $(this);
-        const events = $td.data("events");
+        let events;
 
-        if (!events || !events.length) return;
+        try {
+          events = $td.data("events");
+          // Try to parse if it's a string
+          if (typeof events === "string") {
+            events = JSON.parse(events);
+          }
+        } catch (error) {
+          return;
+        }
 
-        // Create or show tooltip
-        let $tooltip = $(".event-tooltip");
-        if ($tooltip.length === 0) {
-          $tooltip = $('<div class="event-tooltip"></div>').appendTo("body");
+        if (!events || !Array.isArray(events) || events.length === 0) {
+          return;
         }
 
         // Build tooltip content
-        let content = '<div class="event-tooltip-content">';
+        let html = '<div class="event-tooltip-container">';
         events.forEach((event) => {
-          content += `
-                <div class="event-item" style="color: ${event.color || "inherit"}">
-                    <strong>${event.title || "Event"}</strong>
-                    ${event.description ? `<p>${event.description}</p>` : ""}
-                </div>
-            `;
+          html += `<div class="event-tooltip-item">
+        <div class="event-tooltip-title">${event.title || "Event"}</div>
+        ${event.description ? `<div class="event-tooltip-desc">${event.description}</div>` : ""}
+      </div>`;
         });
-        content += "</div>";
+        html += "</div>";
 
         // Position and show tooltip
-        $tooltip
-          .html(content)
-          .css({
-            top: $td.offset().top - $tooltip.outerHeight() - 10,
-            left:
-              $td.offset().left +
-              $td.outerWidth() / 2 -
-              $tooltip.outerWidth() / 2,
-          })
-          .show();
+        const offset = $td.offset();
+        const tdWidth = $td.outerWidth();
+        const tdHeight = $td.outerHeight();
+
+        $tooltip.html(html).css({
+          display: "block",
+          position: "absolute",
+          zIndex: 10000,
+        });
+
+        // Get tooltip dimensions after setting content
+        const tooltipWidth = $tooltip.outerWidth();
+        const tooltipHeight = $tooltip.outerHeight();
+
+        // Calculate position (centered above the cell)
+        const left = offset.left + tdWidth / 2 - tooltipWidth / 2;
+        const top = offset.top - tooltipHeight - 10; // 10px gap
+
+        $tooltip.css({
+          left: Math.max(0, left) + "px",
+          top: Math.max(0, top) + "px",
+        });
       },
     );
 
@@ -799,153 +873,32 @@ class View {
       "mouseleave",
       '.table-days td[data-event="true"]',
       function () {
-        $(".event-tooltip").hide();
+        $("#calendar-tooltip").hide();
       },
     );
-    // this.$container.find('.table-days td[data-event="true"]').each(function () {
-    //   const $td = $(this);
-    //   const eventsData = $td.data("events");
-    //
-    //   if (!eventsData || !Array.isArray(eventsData) || !eventsData.length) {
-    //     return;
-    //   }
-    //
-    //   try {
-    //     tippy(this, {
-    //       content: self._createTooltipContent(eventsData),
-    //       allowHTML: true,
-    //       theme: "calendar-events",
-    //       placement: "top",
-    //       animation: "scale",
-    //       duration: [200, 150],
-    //     });
-    //   } catch (error) {
-    //     console.warn("Error initializing tippy:", error);
-    //     // Fallback to simple tooltip
-    //     self._initSimpleTooltip();
-    //   }
-    // });
+
+    // Hide tooltip when clicking elsewhere
+    $(document).on("click", function (e) {
+      if (!$(e.target).closest('.table-days td[data-event="true"]').length) {
+        $("#calendar-tooltip").hide();
+      }
+    });
   }
 
+  // Fix the _createTooltipContent method
   _createTooltipContent(events) {
     if (!events || !events.length) return "";
 
     let html = '<div class="event-tooltip-container">';
     events.forEach((event) => {
       html += `<div class="event-tooltip-item">
-                <div class="event-tooltip-title">${event.title || "Event"}</div>
-                ${event.description ? `<div class="event-tooltip-desc">${event.description}</div>` : ""}
-            </div>`;
+      <div class="event-tooltip-title">${event.title || "Event"}</div>
+      ${event.description ? `<div class="event-tooltip-desc">${event.description}</div>` : ""}
+    </div>`;
     });
     html += "</div>";
 
     return html;
-  }
-
-  // یک راه‌حل ساده بدون کتابخانه خارجی
-  _initSimpleTooltip() {
-    const $container = this.$container;
-
-    // Add tooltip style if needed
-    if ($("#simple-tooltip-style").length === 0) {
-      $("head").append(`
-                <style id="simple-tooltip-style">
-                    .simple-tooltip {
-                        position: absolute;
-                        display: none;
-                        background-color: #333;
-                        color: white;
-                        padding: 10px;
-                        border-radius: 4px;
-                        z-index: 10000;
-                        max-width: 200px;
-                        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-                    }
-                    [data-theme="dark"] .simple-tooltip {
-                        background-color: #424242;
-                    }
-                    .simple-tooltip .event-tooltip-item {
-                        padding: 5px 0;
-                        border-bottom: 1px solid rgba(255,255,255,0.1);
-                    }
-                    .simple-tooltip .event-tooltip-item:last-child {
-                        border-bottom: none;
-                    }
-                    .simple-tooltip .event-tooltip-title {
-                        font-weight: bold;
-                        margin-bottom: 3px;
-                    }
-                    .simple-tooltip .event-tooltip-desc {
-                        font-size: 12px;
-                        opacity: 0.8;
-                    }
-                </style>
-            `);
-    }
-
-    // Create tooltip element if it doesn't exist
-    if ($container.find(".simple-tooltip").length === 0) {
-      $container.append('<div class="simple-tooltip"></div>');
-    }
-
-    const $tooltip = $container.find(".simple-tooltip");
-
-    // Remove any previous event handlers
-    $container
-      .find('.table-days td[data-event="true"]')
-      .off("mouseenter mouseleave");
-
-    // Add event handlers to show/hide tooltip
-    $container.find('.table-days td[data-event="true"]').each(function () {
-      const $td = $(this);
-      let events;
-
-      try {
-        events = $td.data("events");
-        if (typeof events === "string") {
-          events = JSON.parse(events);
-        }
-      } catch (e) {
-        events = [];
-        console.warn("Error parsing events data", e);
-      }
-
-      if (!events || !events.length) {
-        return;
-      }
-
-      $td.on("mouseenter", function (e) {
-        let html = '<div class="event-tooltip-container">';
-        events.forEach((event) => {
-          html += `<div class="event-tooltip-item">
-                        <div class="event-tooltip-title">${event.title || "Event"}</div>
-                        ${event.description ? `<div class="event-tooltip-desc">${event.description}</div>` : ""}
-                    </div>`;
-        });
-        html += "</div>";
-
-        $tooltip.html(html).css({
-          display: "block",
-          top: $td.offset().top - $tooltip.outerHeight() - 10,
-          left:
-            $td.offset().left +
-            $td.outerWidth() / 2 -
-            $tooltip.outerWidth() / 2,
-        });
-
-        // Adjust position if tooltip is out of viewport
-        const tooltipRect = $tooltip[0].getBoundingClientRect();
-        if (tooltipRect.left < 0) {
-          $tooltip.css("left", "0px");
-        } else if (tooltipRect.right > window.innerWidth) {
-          $tooltip.css("left", window.innerWidth - tooltipRect.width + "px");
-        }
-      });
-
-      $td.on("mouseleave", function () {
-        $tooltip.hide();
-      });
-    });
   }
   /**
    * @desc render times area, prevent performance issue with scroll and time section
