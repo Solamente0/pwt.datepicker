@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Persian Datepicker - نمونه پیشرفته با تم روشن و تاریک</title>
+    <title>Persian Datepicker - نمونه پیشرفته با تم تاریک</title>
 
     <!-- فونت وزیر -->
     <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/font-face.css" rel="stylesheet"
@@ -233,45 +233,11 @@
             color: var(--pdp-text-color);
         }
 
-        .datepicker-plot-area.pdp-light {
-            --pdp-bg-color: #ffffff;
-            --pdp-text-color: #333333;
-            --pdp-border-color: #e0e0e0;
-            --pdp-header-bg: #f5f5f5;
-            --pdp-header-color: #2196f3;
-            --pdp-disabled-color: #bdbdbd;
-            --pdp-disabled-bg: #f5f5f5;
-            --pdp-muted-color: #757575;
-            --pdp-hover-bg: #64b5f6;
-            --pdp-hover-color: #ffffff;
-            --pdp-selected-bg: #1976d2;
-            --pdp-selected-color: #ffffff;
-            --pdp-today-bg: #2196f3;
-            --pdp-today-color: #ffffff;
-            --pdp-shadow: 0 2px 15px rgba(0, 0, 0, 0.15);
-            --pdp-event-indicator: #ff5722;
-            --pdp-holiday-color: #e53935;
-            --pdp-meeting-color: #1e88e5;
-            --pdp-special-color: #43a047;
-            --pdp-tooltip-bg: #333333;
-            --pdp-tooltip-color: #ffffff;
-            --pdp-btn-bg: #f5f5f5;
-            --pdp-btn-color: #333333;
-            --pdp-btn-hover-bg: #e0e0e0;
-            --pdp-btn-hover-color: #333333;
-            --pdp-time-bg: #fafafa;
-
-            background-color: var(--pdp-bg-color);
-            color: var(--pdp-text-color);
-        }
     </style>
 </head>
 
 <body>
 <div class="container">
-    <div class="theme-switcher">
-        <button id="themeToggle" class="theme-btn">تغییر به حالت تاریک</button>
-    </div>
 
     <h1>نمونه استفاده از Persian Datepicker</h1>
 
@@ -352,11 +318,8 @@
 
         // اضافه کردن کلاس تم به تنظیمات اصلی
         const themeOptions = {...baseOptions};
-        if (theme === 'dark') {
-            themeOptions.containerClass = 'pdp-dark';
-        } else {
-            themeOptions.containerClass = 'pdp-light';
-        }
+
+        themeOptions.containerClass = 'pdp-dark';
 
 
         // نمونه 1: غیرفعال کردن روزهای هفته
@@ -613,59 +576,11 @@
         });
     }
 
-    // تابع برای تغییر تم
-    function toggleTheme() {
-        const body = document.body;
-        const themeToggle = document.getElementById('themeToggle');
-
-        if (body.getAttribute('data-theme') === 'dark') {
-            body.removeAttribute('data-theme');
-            themeToggle.textContent = 'تغییر به حالت تاریک';
-            initializeDatepickers('light');
-            // $('.datepicker-plot-area').removeClass('pdp-dark').addClass('pdp-light');
-
-        } else {
-            body.setAttribute('data-theme', 'dark');
-            themeToggle.textContent = 'تغییر به حالت روشن';
-            initializeDatepickers('dark');
-            // $('.datepicker-plot-area').removeClass('pdp-light').addClass('pdp-dark');
-
-        }
-    }
-
-    // تنظیم رویداد کلیک برای دکمه تغییر تم
-    document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+    document.body.setAttribute('data-theme', 'dark');
 
     // بررسی تنظیمات تم تاریک سیستم
-    function checkSystemTheme() {
-        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            document.body.setAttribute('data-theme', 'dark');
-            document.getElementById('themeToggle').textContent = 'تغییر به حالت روشن';
-            initializeDatepickers('dark');
-        } else {
-            initializeDatepickers('light');
-        }
-    }
+    initializeDatepickers('dark');
 
-    // بررسی اولیه تم سیستم
-    checkSystemTheme();
-
-    // گوش دادن به تغییرات تم سیستم
-    // if (window.matchMedia) {
-    //     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (e) {
-    //         console.log("matchMedia", e.matches);
-    //
-    //         if (e.matches) {
-    //             document.body.setAttribute('data-theme', 'dark');
-    //             document.getElementById('themeToggle').textContent = 'تغییر به حالت روشن';
-    //             initializeDatepickers('dark');
-    //         } else {
-    //             document.body.removeAttribute('data-theme');
-    //             document.getElementById('themeToggle').textContent = 'تغییر به حالت تاریک';
-    //             initializeDatepickers('light');
-    //         }
-    //     });
-    // }
 
 </script>
 </body>

@@ -3,7 +3,7 @@
  */
 
 /* متغیرهای CSS برای حالت روشن */
-:root {
+:root @media (prefers-color-scheme: light){
   --pdp-bg-color: #ffffff;
   --pdp-text-color: #333333;
   --pdp-border-color: #e0e0e0;
@@ -95,6 +95,65 @@
 }
 
 .pdp-dark {
+  --pdp-bg-color: #1a1a2e;  /* Deep navy blue - more elegant than pure black */
+  --pdp-text-color: #e0e0e0; /* Light silver - easier on the eyes than pure white */
+  --pdp-border-color: #2c2c44; /* Slightly lighter than the bg for subtle depth */
+  --pdp-header-bg: #2c2c44;    /* Slightly lighter than bg for good contrast */
+  --pdp-header-color: #64b5f6; /* Medium blue - focal point */
+  --pdp-disabled-color: #555566; /* Slightly blueish gray for disabled items */
+  --pdp-disabled-bg: #22223a;  /* Tinted background to match theme */
+  --pdp-muted-color: #8a8aa8;  /* Subtle tint to muted elements */
+  --pdp-hover-bg: #3949ab;     /* Rich indigo blue for hover - more elegant */
+  --pdp-hover-color: #ffffff;  /* White text on hover for contrast */
+  --pdp-selected-bg: #3f51b5;  /* Indigo - professional and modern */
+  --pdp-selected-color: #ffffff;
+  --pdp-today-bg: #4d5ec2;     /* Lighter indigo for today */
+  --pdp-today-color: #ffffff;
+  --pdp-shadow: 0 4px 20px rgba(0, 0, 0, 0.5); /* More dramatic shadow for depth */
+  --pdp-event-indicator: #ef6c00; /* Orange for events - stands out better */
+  --pdp-holiday-color: #f44336; /* Bright red for holidays */
+  --pdp-meeting-color: #2196f3; /* Blue for meetings */
+  --pdp-special-color: #4caf50; /* Green for special events */
+  --pdp-tooltip-bg: #2c2c44;    /* Match header for tooltip */
+  --pdp-tooltip-color: #e0e0e0; /* Match main text */
+  --pdp-btn-bg: #2c2c44;        /* Match header */
+  --pdp-btn-color: #e0e0e0;     /* Match main text */
+  --pdp-btn-hover-bg: #3c3c54;  /* Slightly lighter for hover */
+  --pdp-btn-hover-color: #ffffff; /* White on hover */
+  --pdp-time-bg: #22223a;       /* Slightly lighter than bg */
+}
+
+.datepicker-plot-area.pdp-light {
+  --pdp-bg-color: #ffffff;
+  --pdp-text-color: #333333;
+  --pdp-border-color: #e0e0e0;
+  --pdp-header-bg: #f5f5f5;
+  --pdp-header-color: #2196f3;
+  --pdp-disabled-color: #bdbdbd;
+  --pdp-disabled-bg: #f5f5f5;
+  --pdp-muted-color: #757575;
+  --pdp-hover-bg: #64b5f6;
+  --pdp-hover-color: #ffffff;
+  --pdp-selected-bg: #1976d2;
+  --pdp-selected-color: #ffffff;
+  --pdp-today-bg: #2196f3;
+  --pdp-today-color: #ffffff;
+  --pdp-shadow: 0 2px 15px rgba(0, 0, 0, 0.15);
+  --pdp-event-indicator: #ff5722;
+  --pdp-holiday-color: #e53935;
+  --pdp-meeting-color: #1e88e5;
+  --pdp-special-color: #43a047;
+  --pdp-tooltip-bg: #333333;
+  --pdp-tooltip-color: #ffffff;
+  --pdp-btn-bg: #f5f5f5;
+  --pdp-btn-color: #333333;
+  --pdp-btn-hover-bg: #e0e0e0;
+  --pdp-btn-hover-color: #333333;
+  --pdp-time-bg: #fafafa;
+  background-color: var(--pdp-bg-color);
+  color: var(--pdp-text-color);
+}
+.datepicker-plot-area.pdp-dark {
   --pdp-bg-color: #1e1e1e;
   --pdp-text-color: #e0e0e0;
   --pdp-border-color: #2d2d2d;
@@ -121,8 +180,82 @@
   --pdp-btn-hover-bg: #3d3d3d;
   --pdp-btn-hover-color: #ffffff;
   --pdp-time-bg: #2a2a2a;
+
+  background-color: var(--pdp-bg-color);
+  color: var(--pdp-text-color);
 }
 
+
+/* Improvements to the datepicker in dark mode */
+.pdp-dark.datepicker-plot-area,
+.datepicker-plot-area.pdp-dark {
+  box-shadow: var(--pdp-shadow);
+  backdrop-filter: blur(8px); /* Adds a subtle blur effect under the datepicker */
+}
+
+/* Improve button styles in dark mode */
+.pdp-dark .pwt-btn,
+.datepicker-plot-area.pdp-dark .pwt-btn {
+  transition: all 0.3s ease;
+}
+
+
+.pdp-dark .pwt-btn:hover,
+.datepicker-plot-area.pdp-dark .pwt-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Add subtle hover effects for day cells */
+.pdp-dark .datepicker-day-view .table-days td:not(.disabled):hover span,
+.datepicker-plot-area.pdp-dark .datepicker-day-view .table-days td:not(.disabled):hover span {
+  transform: scale(1.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+
+/* Improve selected day styling */
+.pdp-dark .datepicker-day-view .table-days td.selected span,
+.datepicker-plot-area.pdp-dark .datepicker-day-view .table-days td.selected span {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+/* Enhance event indicators */
+.pdp-dark .event-indicator,
+.datepicker-plot-area.pdp-dark .event-indicator {
+  box-shadow: 0 0 3px rgba(255, 255, 255, 0.3);
+}
+
+/* Add subtle border to the bottom of navigator */
+.pdp-dark .datepicker-navigator,
+.datepicker-plot-area.pdp-dark .datepicker-navigator {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  margin-bottom: 10px;
+  padding-bottom: 5px;
+}
+
+/* Add subtle gradient to datepicker background for depth */
+.pdp-dark,
+.datepicker-plot-area.pdp-dark {
+  background-image: linear-gradient(to bottom right, #1a1a2e, #1f1f35);
+}
+
+/* Improve month and year items in datepicker */
+.pdp-dark .datepicker-month-view .month-item,
+.pdp-dark .datepicker-year-view .year-item,
+.datepicker-plot-area.pdp-dark .datepicker-month-view .month-item,
+.datepicker-plot-area.pdp-dark .datepicker-year-view .year-item {
+  transition: all 0.3s ease;
+}
+
+
+.pdp-dark .datepicker-month-view .month-item:hover,
+.pdp-dark .datepicker-year-view .year-item:hover,
+.datepicker-plot-area.pdp-dark .datepicker-month-view .month-item:hover,
+.datepicker-plot-area.pdp-dark .datepicker-year-view .year-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
 /* استایل‌های اصلی با استفاده از متغیرها */
 .datepicker-plot-area {
   font-family: 'Vazir', 'Tahoma', sans-serif;
